@@ -39,11 +39,11 @@ ARCHITECTURE tb OF tb_ram_dp IS
 BEGIN
 
   CreateClock(i_clock_a, c_period);
-  i_clock_b <= i_clock_b;
+  i_clock_b <= i_clock_a;
 
   id <= GetAlertLogId(PathTail(tb_ram_dp'INSTANCE_NAME));
-  SetLogEnable(INFO, FALSE);
-  SetLogEnable(DEBUG, FALSE);
+  SetLogEnable(INFO, TRUE);
+  SetLogEnable(DEBUG, TRUE);
 
   proc_stim : PROCESS
   BEGIN
@@ -62,7 +62,7 @@ BEGIN
     i_wren_a <= '0';
 
     WHILE test_suite LOOP
-      IF run("init") THEN
+      IF run("init_a") THEN
         Log(id, "start test");
         FOR I IN 0 TO 2**g_addr_width-1 LOOP
           i_addr_a <= STD_LOGIC_VECTOR(TO_UNSIGNED(I, i_addr_a'LENGTH));
@@ -78,7 +78,7 @@ BEGIN
         END LOOP;
       END IF;
 
-      IF run("random_data_sequential") THEN
+      IF run("random_data_sequential_a") THEN
         Log(id, "start sequential write");
         FOR I IN 0 TO 2**g_addr_width-1 LOOP
           i_wren_a <= '1';
@@ -103,6 +103,46 @@ BEGIN
         END LOOP;
       END IF;
 
+      IF run("init_b") THEN
+        Log(id, "start test");
+        FOR I IN 0 TO 2**g_addr_width-1 LOOP
+          i_addr_b <= STD_LOGIC_VECTOR(TO_UNSIGNED(I, i_addr_b'LENGTH));
+          i_data_b <= (OTHERS => '1');
+          IF g_register = TRUE THEN
+            WaitForClock(i_clock_b,1);
+          END IF;
+          WAIT FOR c_period/4;
+          AffirmIf(id, sv_mem.MemRead(i_addr_b) = o_q_b, "readdata missmatch " & to_hstring(o_q_b)& " /= " & to_hstring(sv_mem.MemRead(i_addr_b)), ERROR);
+          IF g_register = FALSE THEN
+            WaitForClock(i_clock_b,1);
+          END IF;
+        END LOOP;
+      END IF;
+
+      IF run("random_data_sequential_b") THEN
+        Log(id, "start sequential write");
+        FOR I IN 0 TO 2**g_addr_width-1 LOOP
+          i_wren_b <= '1';
+          i_addr_b <= STD_LOGIC_VECTOR(TO_UNSIGNED(I, i_addr_b'LENGTH));
+          i_data_b <= sv_rand.RandSlv(g_width);
+          WaitForClock(i_clock_b,1);
+        END LOOP;
+
+        Log(id, "start sequential read");
+        FOR I IN 0 TO 2**g_addr_width-1 LOOP
+          i_wren_b <= '0';
+          i_addr_b <= STD_LOGIC_VECTOR(TO_UNSIGNED(I, i_addr_b'LENGTH));
+          i_data_b <= sv_rand.RandSlv(g_width);
+          IF g_register = TRUE THEN
+            WaitForClock(i_clock_b,1);
+          END IF;
+          WAIT FOR c_period/4;
+          AffirmIf(id, sv_mem.MemRead(i_addr_b) = o_q_b, "readdata missmatch " & to_hstring(o_q_b)& " /= " & to_hstring(sv_mem.MemRead(i_addr_b)), ERROR);
+          IF g_register = FALSE THEN
+            WaitForClock(i_clock_b,1);
+          END IF;
+        END LOOP;
+      END IF;
     END LOOP;
     ReportAlerts;
     check(GetAffirmCount > 0, "test not selfchecking", FAILURE);
@@ -134,13 +174,23 @@ BEGIN
   );
 
 
-  inst_memory_model: PROCESS
+  inst_memory_model_a: PROCESS
   BEGIN
     WaitForClock(i_clock_a,1);
     IF i_wren_a THEN
       Log(id, "Memeory Write @" & TO_HSTRING(i_addr_a) & ": " & TO_HSTRING(i_data_a), DEBUG);
       sv_mem.MemWrite(i_addr_a,i_data_a);
       Log(id, "Memeory is @" & TO_HSTRING(i_addr_a) & ": " & TO_HSTRING(sv_mem.MemRead(i_addr_a)), DEBUG);
+    END IF;
+  END PROCESS;
+
+  inst_memory_model_b: PROCESS
+  BEGIN
+    WaitForClock(i_clock_b,1);
+    IF i_wren_b THEN
+      Log(id, "Memeory Write @" & TO_HSTRING(i_addr_b) & ": " & TO_HSTRING(i_data_b), DEBUG);
+      sv_mem.MemWrite(i_addr_b,i_data_b);
+      Log(id, "Memeory is @" & TO_HSTRING(i_addr_b) & ": " & TO_HSTRING(sv_mem.MemRead(i_addr_b)), DEBUG);
     END IF;
   END PROCESS;
 

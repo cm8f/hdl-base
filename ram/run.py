@@ -25,15 +25,15 @@ def create_test_suite(prj):
 
     tb_ram_sp = lib.test_bench("tb_ram_sp")
 
-    addrw = [8]
-    widths = [8, 32, 64]
+    addrw = [8,9,10]
+    widths = [8,9,16,18,31]
     oreg = [True, False]
     for test in tb_ram_sp.get_tests():
         for width in widths:
             for reg in oreg:
                 for awidth in addrw:
                     test.add_config(
-                        name="width=%d,reg=%s" %(width, reg),
+                        name="width=%d,depth=%d,reg=%s" %(width, 2<<(awidth-1), reg),
                         generics=dict(
                             g_addr_width=awidth,
                             g_width=width,

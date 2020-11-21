@@ -11,3 +11,5 @@ pipelines:
           name: 'Build and Test'
           script:
             - echo "Your build and test goes here..."
+            - cd ./ram 
+            - python ./run.py -x output.xml --xunit-xml-format jenkins

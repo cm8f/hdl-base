@@ -41,6 +41,20 @@ def create_test_suite(prj):
                         )
                     )
 
+    tb_ram_dp = lib.test_bench("tb_ram_dp")
+    for test in tb_ram_dp.get_tests():
+        for width in widths:
+            for reg in oreg:
+                for awidth in addrw:
+                    test.add_config(
+                        name="width=%d,depth=%d,reg=%s" %(width, 2<<(awidth-1), reg),
+                        generics=dict(
+                            g_addr_width=awidth,
+                            g_width=width,
+                            g_register=reg
+                        )
+                    )
+
 
 if __name__ == "__main__":
     VU = VUnit.from_argv()

@@ -1,15 +1,17 @@
 pipeline {
     agent any
-    
+
     stages {
-        stage("compile") {
+        stage("tools") {
             steps {
-                echo 'compiling library'
+                sh 'python --version'
+                sh 'pip install vunit-hdl'
+                sh 'ghdl --version'
             }
         }
         stage("simulate") {
             steps {
-                echo 'simulating design'
+                sh 'cd ram && python ./run.py -p6 -x output.xml --xunit-xml-format jenkins --no-color'
             }
         }
     }

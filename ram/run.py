@@ -1,6 +1,11 @@
 #!/bin/python
 from os.path import join, dirname
+#from subprocess import call
 from vunit import VUnit
+
+#def post_run(results):
+#    results.merge_coverage(file_name="coverage_data")
+#    call(["gcovr", "coverage_data"])
 
 def create_test_suite(prj):
     root = dirname(__file__)
@@ -16,7 +21,7 @@ def create_test_suite(prj):
     if prj.get_simulator_name() == "ghdl":
         lib.set_compile_option("ghdl.a_flags", ["--std=08", "--ieee=synopsys", "-frelaxed-rules"])
         lib.set_compile_option("ghdl.a_flags", ["--std=08", "--ieee=synopsys", "-frelaxed-rules"])
-        lib.set_sim_option("ghdl.elab_flags", ["--ieee=synopsys"])
+        lib.set_sim_option("ghdl.elab_flags", ["--ieee=synopsys", "-frelaxed-rules"])
 
     tb_ram_sp = lib.test_bench("tb_ram_sp")
 
@@ -42,3 +47,4 @@ if __name__ == "__main__":
     VU.add_osvvm()
     create_test_suite(VU)
     VU.main()
+    #VU.main(post_run=post_run)

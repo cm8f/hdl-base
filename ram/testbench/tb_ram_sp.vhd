@@ -35,13 +35,15 @@ BEGIN
 
   CreateClock(i_clock, c_period);
   id <= GetAlertLogId(PathTail(tb_ram_sp'INSTANCE_NAME));
+  SetLogEnable(INFO, FALSE);
+  SetLogEnable(DEBUG, FALSE);
 
   proc_stim : PROCESS
   BEGIN
     test_runner_setup(runner, runner_cfg);
     WaitForClock(i_clock, 16);
 
-    sv_mem.MemInit(i_addr'LENGTH, i_data'LENGTH);
+    sv_mem.MemInit(AddrWidth => i_addr'LENGTH, DataWidth => i_data'LENGTH);
     sv_rand.InitSeed(sv_rand'INSTANCE_NAME);
 
     FOR i IN 0 TO 2**g_addr_width-1 LOOP
@@ -124,7 +126,9 @@ BEGIN
   BEGIN
     WaitForClock(i_clock,1);
     IF i_wren THEN
+      Log(id, "Memeory Write @" & TO_HSTRING(i_addr) & ": " & TO_HSTRING(i_data), DEBUG);
       sv_mem.MemWrite(i_addr,i_data);
+      Log(id, "Memeory is @" & TO_HSTRING(i_addr) & ": " & TO_HSTRING(sv_mem.MemRead(i_addr)), DEBUG);
     END IF;
   END PROCESS;
 

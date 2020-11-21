@@ -50,7 +50,7 @@ BEGIN
     test_runner_setup(runner, runner_cfg);
     WaitForClock(i_clock_a, 16);
 
-    sv_mem.MemInit(AddrWidth => i_addr'LENGTH, DataWidth => i_data'LENGTH);
+    sv_mem.MemInit(AddrWidth => i_addr_a'LENGTH, DataWidth => i_data_a'LENGTH);
     sv_rand.InitSeed(sv_rand'INSTANCE_NAME);
 
     FOR i IN 0 TO 2**g_addr_width-1 LOOP
@@ -68,12 +68,12 @@ BEGIN
           i_addr_a <= STD_LOGIC_VECTOR(TO_UNSIGNED(I, i_addr_a'LENGTH));
           i_data_a <= (OTHERS => '1');
           IF g_register = TRUE THEN
-            WaitForClock(i_clock,1);
+            WaitForClock(i_clock_a,1);
           END IF;
           WAIT FOR c_period/4;
-          AffirmIf(id, sv_mem.MemRead(i_addr) = o_q, "readdata missmatch " & to_hstring(o_qa)& " /= " & to_hstring(sv_mem.MemRead(i_addr_a)), ERROR);
+          AffirmIf(id, sv_mem.MemRead(i_addr_a) = o_q_a, "readdata missmatch " & to_hstring(o_q_a)& " /= " & to_hstring(sv_mem.MemRead(i_addr_a)), ERROR);
           IF g_register = FALSE THEN
-            WaitForClock(i_clock,1);
+            WaitForClock(i_clock_a,1);
           END IF;
         END LOOP;
       END IF;
@@ -96,7 +96,7 @@ BEGIN
             WaitForClock(i_clock_a,1);
           END IF;
           WAIT FOR c_period/4;
-          AffirmIf(id, sv_mem.MemRead(i_addr_a) = o_qa, "readdata missmatch " & to_hstring(o_qa)& " /= " & to_hstring(sv_mem.MemRead(i_addr_a)), ERROR);
+          AffirmIf(id, sv_mem.MemRead(i_addr_a) = o_q_a, "readdata missmatch " & to_hstring(o_q_a)& " /= " & to_hstring(sv_mem.MemRead(i_addr_a)), ERROR);
           IF g_register = FALSE THEN
             WaitForClock(i_clock_a,1);
           END IF;
@@ -123,14 +123,14 @@ BEGIN
   PORT MAP (
     address_a     => i_addr_a,
     address_b     => i_addr_b,
-    clock_a       => i_clock,
-    clock_b       => i_clock,
+    clock_a       => i_clock_a,
+    clock_b       => i_clock_b,
     data_a        => i_data_a,
     data_b        => i_data_b,
     wren_a        => i_wren_a,
     wren_b        => i_wren_b,
-    q_a           => o_qa,
-    q_b           => o_qb
+    q_a           => o_q_a,
+    q_b           => o_q_b
   );
 
 

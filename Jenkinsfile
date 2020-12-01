@@ -4,14 +4,24 @@ pipeline {
     stages {
         stage("tools") {
             steps {
-                sh 'python --version'
-                sh 'pip install vunit-hdl'
+                sh 'python3 --version'
+                sh 'pip3 install vunit-hdl'
                 sh 'ghdl --version'
+            }
+        }
+        stage("compile") {
+            steps {
+                sh 'cd ram && python3 ./run.py --compile --exit-0'
+            }
+        }
+        stage("elaborate") {
+            steps {
+                sh 'cd ram && python3 ./run.py --elaborate -p6 --exit-0'
             }
         }
         stage("simulate") {
             steps {
-                sh 'cd ram && python ./run.py -p6 -x output.xml --xunit-xml-format jenkins --no-color --exit-0'
+                sh 'cd ram && python3 ./run.py -p6 -x output.xml --xunit-xml-format jenkins --exit-0'
             }
         }
     }

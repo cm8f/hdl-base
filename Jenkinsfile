@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        docker { image 'ghdl/ext:latest' }
+        docker { image 'ghdl/vunit:gcc' }
     }
 
     stages {
@@ -12,17 +12,17 @@ pipeline {
         }
         stage("compile") {
             steps {
-                sh 'cd ram && python3 ./run.py --compile '
+                sh 'cd ram && python3 ./run.py --compile --no-color'
             }
         }
         stage("elaborate") {
             steps {
-                sh 'cd ram && python3 ./run.py --elaborate -p6 '
+                sh 'cd ram && python3 ./run.py --elaborate -p6 --no-color'
             }
         }
         stage("simulate") {
             steps {
-                sh 'cd ram && python3 ./run.py -p6 -x output.xml --xunit-xml-format jenkins --exit-0'
+                sh 'cd ram && python3 ./run.py -p6 -x output.xml --xunit-xml-format jenkins --exit-0 --no-color'
             }
         }
     }

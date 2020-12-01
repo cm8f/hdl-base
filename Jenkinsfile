@@ -12,12 +12,12 @@ pipeline {
         }
         stage("compile") {
             steps {
-                sh 'cd ram && python3 ./run.py --compile --exit-0'
+                sh 'cd ram && python3 ./run.py --compile '
             }
         }
         stage("elaborate") {
             steps {
-                sh 'cd ram && python3 ./run.py --elaborate -p6 --exit-0'
+                sh 'cd ram && python3 ./run.py --elaborate -p6 '
             }
         }
         stage("simulate") {
@@ -33,4 +33,3 @@ pipeline {
         }
     }
 }
-

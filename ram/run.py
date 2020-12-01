@@ -6,7 +6,7 @@ from vunit import VUnit
 def post_run(results):
     results.merge_coverage(file_name="coverage_data")
     if VU.get_simulator_name() == "ghdl":
-        call(["gcovr", "coverage_data"])
+        call(["gcovr", "-x", "coverage.xml", "coverage_data"])
 
 def create_test_suite(prj):
     root = dirname(__file__)

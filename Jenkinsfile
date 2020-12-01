@@ -1,11 +1,12 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'ghdl/ext:latest' }
+    }
 
     stages {
         stage("tools") {
             steps {
                 sh 'python3 --version'
-                sh 'pip3 install vunit-hdl'
                 sh 'ghdl --version'
             }
         }
@@ -32,3 +33,4 @@ pipeline {
         }
     }
 }
+

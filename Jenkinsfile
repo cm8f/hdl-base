@@ -28,9 +28,8 @@ pipeline {
     }
     post {
         always {
-            archiveArtifacts artifacts: '**/output.xml', fingerprint: true
-            junit '**/*.xml'
-            archiveArtifacts artifacts: '**/coverage.xml', fingerprint: true
+            archiveArtifacts artifacts: '**/*.xml', fingerprint: true
+            junit '**/output.xml'
             step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: '**/coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 0, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
 
         }

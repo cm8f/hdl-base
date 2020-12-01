@@ -30,6 +30,7 @@ pipeline {
         always {
             archiveArtifacts artifacts: '**/*.xml', fingerprint: true
             junit '**/*.xml'
+            archiveArtifacts artifacts: '**/coverage_data', fingerprint: true
         }
     }
 }

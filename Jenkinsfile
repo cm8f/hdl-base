@@ -12,17 +12,17 @@ pipeline {
         }
         stage("compile") {
             steps {
-                sh 'cd ram && python3 ./run.py --compile --no-color'
+                sh 'python3 ./run.py --compile --no-color --cover 1'
             }
         }
         stage("elaborate") {
             steps {
-                sh 'cd ram && python3 ./run.py --elaborate -p6 --no-color'
+                sh 'python3 ./run.py --elaborate -p6 --no-color --cover 1'
             }
         }
         stage("simulate") {
             steps {
-                sh 'cd ram && python3 ./run.py -p6 -x output.xml --xunit-xml-format jenkins --exit-0 --no-color'
+                sh 'python3 ./run.py -p6 -x output.xml --xunit-xml-format jenkins --exit-0 --no-color --cover 1'
             }
         }
     }

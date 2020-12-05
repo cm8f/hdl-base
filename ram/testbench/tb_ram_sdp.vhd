@@ -92,7 +92,8 @@ BEGIN
             AffirmIf(id, sv_mem.MemRead(i_addr_b) = o_q_b, "readdata missmatch " & to_hstring(o_q_b) & " /= " & to_hstring(sv_mem.MemRead(i_addr_b)), ERROR);
           ELSIF g_width_a < g_width_b THEN 
             FOR i IN 0 TO c_factor-1 LOOP
-              AffirmIf(id, sv_mem.MemRead(i_addr_b) = o_q_b, "readdata missmatch " & to_hstring(o_q_b) & " /= " & to_hstring(sv_mem.MemRead(i_addr_b)), ERROR);
+              AffirmIf(id, sv_mem.MemRead(i_addr_b & STD_LOGIC_VECTOR(TO_UNSIGNED(I, c_factor_log))) = o_q_b( (I+1)*g_width_a-1 DOWNTO I*g_width_a ), 
+                "readdata missmatch " & to_hstring(o_q_b) & " /= " & to_hstring(sv_mem.MemRead(i_addr_b & STD_LOGIC_VECTOR(TO_UNSIGNED(I, c_factor_log)))), ERROR);
             END LOOP;
           END IF;
 

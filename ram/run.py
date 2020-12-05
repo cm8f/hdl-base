@@ -61,7 +61,7 @@ def create_test_suite(prj, args):
                     )
 
     depths = [512, 256]
-    widths = [8, 16, 32]
+    widths = [4, 8, 16]
     tb_ram_sdp = lib.test_bench("tb_ram_sdp")
     for test in tb_ram_sdp.get_tests():
         for depth_a in depths:

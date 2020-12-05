@@ -62,8 +62,6 @@ BEGIN
         WaitForClock(i_clock, 1);
         i_rdreq <= '0';
         AffirmIf(id, o_dout = i_din, "readback failed. " & TO_HSTRING(o_dout) & " " & TO_HSTRING(i_din), ERROR);
-        ReportAlerts;
-        check(GetAlertCount = 0, "encountered errors");
       END IF;
 
       IF run("write_until_full_read_until_empty") THEN
@@ -96,11 +94,55 @@ BEGIN
         Affirmif(id, o_empty = '1', "empty flag not asserted", ERROR);
         AffirmIf(id, UNSIGNED(o_usedw) = 0, "usedword not zero" & TO_HSTRING(o_usedw), WARNING);
 
-        ReportAlerts;
-        check(GetAlertCount = 0 AND sb.empty, "encountered errors");
+      END IF;
+
+      IF run("read_while_write") THEN
+        i_din   <= (OTHERS => '0');
+        i_wrreq <= '0';
+        i_rdreq <= '0';
+        WaitForLevel(i_reset, '0');
+        WaitForClock(i_clock, 1);
+        Log(id, "Write until half full");
+        FOR I IN 0 TO g_depth/2-1 LOOP
+          i_din <= STD_LOGIC_VECTOR(TO_UNSIGNED(I, i_din'LENGTH));
+          i_wrreq <= '1';
+          sb.push(i_din);
+          WaitForClock(i_clock, 1);
+        END LOOP;
+        i_wrreq <= '0';
+        WaitForClock(i_clock, 5);
+        Affirmif(id, o_full = '0', "full flag asserted", ERROR);
+        Affirmif(id, UNSIGNED(o_usedw) = g_depth/2, "usedword unexpected" & TO_HSTRING(o_usedw), WARNING);
+
+        FOR I IN 0 TO g_depth-2 LOOP
+          i_wrreq <= '1';
+          i_rdreq <= '1';
+          i_din <= STD_LOGIC_VECTOR(TO_UNSIGNED(g_depth-I, i_din'LENGTH));
+          sb.push(i_din);
+          WaitForClock(i_clock, 1);
+          sb.check(o_dout);
+        END LOOP;
+        i_wrreq <= '0';
+        i_rdreq <= '0';
+        WaitForClock(i_clock, 1);
+
+        Log(id, "read until empty");
+        WHILE o_empty = '0' AND NOT sb.empty LOOP
+          i_rdreq <= '1';
+          WaitForClock(i_clock, 1);
+          sb.check(o_dout);
+        END LOOP;
+        i_rdreq <= '0';
+
+        WaitForClock(i_clock, 5);
+        Affirmif(id, o_empty = '1', "empty flag not asserted", ERROR);
+        AffirmIf(id, UNSIGNED(o_usedw) = 0, "usedword not zero" & TO_HSTRING(o_usedw), WARNING);
       END IF;
     END LOOP;
 
+    ReportAlerts;
+    check(GetAffirmCount > 0, "not selfchecking");
+    check(GetAlertCount = 0 AND sb.empty, "encountered errors");
     test_runner_cleanup(runner);
   END PROCESS;
 

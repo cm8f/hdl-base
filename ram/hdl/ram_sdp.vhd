@@ -32,9 +32,13 @@ ARCHITECTURE rtl OF ram_sdp IS
   SIGNAL ram : ram_t;
 
   SIGNAL s_wr_in : word_t;
+  SIGNAL s_rd_dout : STD_LOGIC_VECTOR(g_data_width_b-1 DOWNTO 0);
 
 BEGIN
 
+  --====================================================================
+  --= write size greater read size
+  --====================================================================
   gen_wr_greater: IF g_data_width_a >= g_data_width_b GENERATE
     gen_map: FOR I IN 0 TO c_factor-1 GENERATE
       s_wr_in(I)   <= data_a( (I+1)*g_data_width_b-1 DOWNTO I*g_data_width_b);
@@ -63,7 +67,36 @@ BEGIN
 
   END GENERATE;
 
+
+
+  --====================================================================
+  --= read size greater write size
+  --====================================================================
   gen_rd_greater: IF g_data_width_a < g_data_width_b GENERATE
+    gen_map: FOR I IN 0 TO c_factor-1 GENERATE
+      s_rd_dout( (I+1)*g_data_width_a -1 DOWNTO I*g_data_width_a) <= ram(TO_INTEGER(UNSIGNED(address_b)))(I);
+    END GENERATE;
+
+    PROCESS(clock)
+    BEGIN
+      IF RISING_EDGE(clock) THEN
+        IF wren_a = '1' THEN
+          ram(to_INTEGER(UNSIGNED(address_a))/c_factor)(TO_INTEGER(UNSIGNED(address_a)) MOD c_factor) <= data_a;
+        END IF;
+      END IF;
+    END PROCESS;
+
+    gen_out_wrgreater: IF g_output_reg = True GENERATE
+      PROCESS(clock)
+      BEGIN
+        IF RISING_EDGE(clock) THEN
+          q_b <= s_rd_dout;
+        END IF;
+      END PROCESS;
+
+    ELSE GENERATE
+      q_b <= s_rd_dout;
+    END GENERATE;
 
   END GENERATE;
 

@@ -23,6 +23,8 @@ END ENTITY;
 ARCHITECTURE tb OF tb_ram_sdp IS
 
   CONSTANT c_period : TIME := 10 ns;
+  CONSTANT c_factor   : INTEGER := maximum(g_width_a, g_width_b) / minimum(g_width_a, g_width_b);
+  CONSTANT c_factor_log : INTEGER := INTEGER(ceil(log2(real(c_factor))));
   SIGNAL i_clock_a    : STD_LOGIC;
   -- write port
   SIGNAL i_addr_a     : STD_LOGIC_VECTOR(INTEGER(CEIL(LOG2(REAL(g_depth_a))))-1 DOWNTO 0);
@@ -87,9 +89,11 @@ BEGIN
           IF g_width_a = g_width_b THEN 
             AffirmIf(id, sv_mem.MemRead(i_addr_b) = o_q_b, "readdata missmatch " & to_hstring(o_q_b)& " /= " & to_hstring(sv_mem.MemRead(i_addr_b)), ERROR);
           ELSIF g_width_a > g_width_b THEN 
-            Alert(id, " no check implemented");
+            AffirmIf(id, sv_mem.MemRead(i_addr_b) = o_q_b, "readdata missmatch " & to_hstring(o_q_b) & " /= " & to_hstring(sv_mem.MemRead(i_addr_b)), ERROR);
           ELSIF g_width_a < g_width_b THEN 
-            Alert(id, " no check implemented");
+            FOR i IN 0 TO c_factor-1 LOOP
+              AffirmIf(id, sv_mem.MemRead(i_addr_b) = o_q_b, "readdata missmatch " & to_hstring(o_q_b) & " /= " & to_hstring(sv_mem.MemRead(i_addr_b)), ERROR);
+            END LOOP;
           END IF;
 
           IF g_register = FALSE THEN
@@ -98,9 +102,9 @@ BEGIN
         END LOOP;
       END IF;
 
-      IF run("random_data_random_access") THEN
-        Log(id, "start sequential write");
-      END IF;
+      --IF run("random_data_random_access") THEN
+      --  Log(id, "start sequential write");
+      --END IF;
 
     END LOOP;
     ReportAlerts;
@@ -136,12 +140,14 @@ BEGIN
     WaitForClock(i_clock_a,1);
     IF i_wren_a THEN
       Log(id, "Memeory Write @" & TO_HSTRING(i_addr_a) & ": " & TO_HSTRING(i_data_a), DEBUG);
-      IF g_width_a = g_width_b THEN
+      IF g_width_a = g_width_b THEN 
         sv_mem.MemWrite(i_addr_a,i_data_a);
       ELSIF g_width_a > g_width_b THEN 
-
-      ELSIF g_width_a < g_width_b THEN 
-
+        FOR I IN 0 TO c_factor-1 LOOP 
+          sv_mem.MemWrite(i_addr_a & STD_LOGIC_VECTOR(TO_UNSIGNED(I, c_factor_log)), i_data_a( (I+1)*g_width_b-1 DOWNTO I*g_width_b) );
+        END LOOP;
+      ELSIF g_width_a <= g_width_b THEN 
+        sv_mem.MemWrite(i_addr_a,i_data_a);
       END IF;
     END IF;
   END PROCESS;

@@ -46,7 +46,7 @@ def create_test_suite(prj, args):
                         )
                     )
 
-    tb_ram_dp = lib.test_bench("tb_ram_dp")
+    tb_ram_dp = lib.test_bench("tb_ram_tdp")
     for test in tb_ram_dp.get_tests():
         for width in widths:
             for reg in oreg:
@@ -59,6 +59,26 @@ def create_test_suite(prj, args):
                             g_register=reg
                         )
                     )
+
+    depths = [512, 256]
+    widths = [8, 16, 32]
+    tb_ram_sdp = lib.test_bench("tb_ram_sdp")
+    for test in tb_ram_sdp.get_tests():
+        for depth_a in depths:
+            for width_a in widths:
+                for width_b in widths:
+                    depth_b = int(depth_a * width_a / width_b)
+                    for reg in oreg:
+                        test.add_config(
+                            name="deptha=%d,depthb=%d,widtha=%d,widthb=%d,reg=%s" % (depth_a, depth_b, width_a, width_b, reg),
+                            generics=dict(
+                                g_width_a=width_a,
+                                g_width_b=width_b,
+                                g_depth_a=depth_a,
+                                g_depth_b=depth_b,
+                                g_register=reg
+                            )
+                        )
 
 
 if __name__ == "__main__":

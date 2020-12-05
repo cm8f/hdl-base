@@ -4,7 +4,7 @@ USE IEEE.NUMERIC_STD.ALL;
 USE IEEE.MATH_REAL.ALL;
 
 
-ENTITY ram_dp IS
+ENTITY ram_tdp IS
   GENERIC(
     g_addr_width  : INTEGER := 8;
     g_data_width  : INTEGER := 32;
@@ -23,9 +23,9 @@ ENTITY ram_dp IS
 		q_a         : OUT STD_LOGIC_VECTOR (g_data_width-1 DOWNTO 0);
 		q_b         : OUT STD_LOGIC_VECTOR (g_data_width-1 DOWNTO 0)
 	);
-END ram_dp;
+END ram_tdp;
 
-ARCHITECTURE SYN OF ram_dp IS
+ARCHITECTURE SYN OF ram_tdp IS
 
   type t_memory is array(0 to (2**g_addr_width)-1) of STD_LOGIC_VECTOR(g_data_width-1 downto 0);
   shared variable memory : t_memory;

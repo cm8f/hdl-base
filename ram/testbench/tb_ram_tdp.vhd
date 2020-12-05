@@ -8,7 +8,7 @@ CONTEXT OSVVM.OSVVMCONTEXT;
 LIBRARY VUNIT_LIB;
 CONTEXT VUNIT_LIB.VUNIT_CONTEXT;
 
-ENTITY tb_ram_dp IS
+ENTITY tb_ram_tdp IS
   GENERIC(
     runner_cfg   : STRING;
     g_width      : INTEGER;
@@ -17,7 +17,7 @@ ENTITY tb_ram_dp IS
   );
 END ENTITY;
 
-ARCHITECTURE tb OF tb_ram_dp IS
+ARCHITECTURE tb OF tb_ram_tdp IS
 
   CONSTANT c_period : TIME := 10 ns;
   SIGNAL i_clock_a    : STD_LOGIC;
@@ -41,7 +41,7 @@ BEGIN
   CreateClock(i_clock_a, c_period);
   i_clock_b <= i_clock_a;
 
-  id <= GetAlertLogId(PathTail(tb_ram_dp'INSTANCE_NAME));
+  id <= GetAlertLogId(PathTail(tb_ram_tdp'INSTANCE_NAME));
   SetLogEnable(INFO, TRUE);
   SetLogEnable(DEBUG, TRUE);
 
@@ -154,7 +154,7 @@ BEGIN
 
 
 
-  inst_dut: ENTITY WORK.ram_dp
+  inst_dut: ENTITY WORK.ram_tdp
   GENERIC MAP (
     g_addr_width  => g_addr_width,
     g_data_width  => g_width,

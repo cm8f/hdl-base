@@ -16,6 +16,16 @@ def create_test_suite(prj, args):
     lib.add_source_files(join(root, "./hdl/*.vhd"))
     lib.add_source_files(join(root, "./testbench/*.vhd"))
 
+    tb_reset_ctrl = lib.test_bench("tb_reset")
+    for test in tb_reset_ctrl.get_tests():
+        for sync in [True, False]:
+            test.add_config(
+                name="sync_reset=%s" % sync,
+                generics=dict(
+                    g_sync=sync
+                )
+            )
+
     prj.add_osvvm()
     prj.add_random()
 

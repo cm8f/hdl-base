@@ -34,7 +34,7 @@ def create_test_suite(prj, args):
 
     tb_fifo_sc = lib.test_bench("tb_fifo_sc")
 
-    depths = [256, 512]
+    depths = [128, 256]
     widths = [8, 16, 32]
     oreg = [True, False]
     for test in tb_fifo_sc.get_tests():

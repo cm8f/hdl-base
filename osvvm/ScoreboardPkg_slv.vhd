@@ -57,6 +57,6 @@ package ScoreBoardPkg_slv is new work.ScoreboardGenericPkg
     ExpectedType        => STD_LOGIC_VECTOR,  
     ActualType          => STD_LOGIC_VECTOR,  
     Match               => "=",  
-    expected_to_string  => to_string,  
-    actual_to_string    => to_string    
+    expected_to_string  => to_hstring,  
+    actual_to_string    => to_hstring    
   ) ;  

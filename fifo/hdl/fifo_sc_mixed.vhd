@@ -122,7 +122,7 @@ BEGIN
       data_a          => i_din,
       wren_a          => i_wrreq,
       -- read
-      address_b       => STD_LOGIC_VECTOR(r_rd_ptr_rd(r_wr_ptr_wr'HIGH-1 DOWNTO 0)),
+      address_b       => STD_LOGIC_VECTOR(r_rd_ptr_rd(r_rd_ptr_rd'HIGH-1 DOWNTO 0)),
       q_b             => o_dout
     );
 

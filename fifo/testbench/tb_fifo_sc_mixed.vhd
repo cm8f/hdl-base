@@ -59,6 +59,8 @@ BEGIN
   BEGIN
     id <= GetAlertLogID(tb_fifo_sc_mixed'INSTANCE_NAME);
     WAIT FOR 0 ns;
+    SetLogEnable(DEBUG, TRUE);
+    SetLogEnable(PASSED, TRUE );
     WAIT;
   END PROCESS;
 
@@ -120,6 +122,12 @@ BEGIN
 
     ReportAlerts;
     check(GetAffirmCount > 0, "test not self checking");
+    check(sv_bin1.IsCovered, "coverage error 1");
+    check(sv_bin2.IsCovered, "coverage error 2");
+    check(sv_bin3.IsCovered, "coverage error 3");
+    check(sv_bin4.IsCovered, "coverage error 4");
+    check(sv_bin5.IsCovered, "coverage error 5");
+    check(sv_bin6.IsCovered, "coverage error 6");
     check_equal(GetAlertCount, 0, "test failed");
     test_runner_cleanup(runner);
   END PROCESS;
@@ -127,11 +135,36 @@ BEGIN
 
 
   --====================================================================
+  --= watch cover
+  --====================================================================
+  PROCESS
+  BEGIN
+    WAIT FOR 500 us;
+    Log(id, "==================================================");
+    Log(id, "cover temp report @ " & TIME'IMAGE(NOW) );
+    Log(id, "==================================================");
+
+    sv_bin1.writeBin;
+    sv_bin2.writeBin;
+    sv_bin3.writeBin;
+    sv_bin4.writeBin;
+    sv_bin5.writeBin;
+    sv_bin6.writeBin;
+  END PROCESS;
+
+
+  --====================================================================
   --= write process
   --====================================================================
   proc_write: PROCESS
   BEGIN
-    i_wrreq <= sv_rand.RandSlv(1)(1) AND NOT i_reset;
+    IF g_wr_width = g_rd_width THEN
+      i_wrreq <= sv_rand.RandSlv(1)(1) AND NOT i_reset;
+    ELSIF g_wr_width > g_rd_width THEN
+      i_wrreq <= TO_UNSIGNED(sv_rand.FavorSmall(0,1),1)(0) AND NOT i_reset;
+    ELSIF g_wr_width < g_rd_width THEN
+      i_wrreq <= TO_UNSIGNED(sv_rand.FavorBig(0,1),1)(0) AND NOT i_reset;
+    END IF;
     i_din   <= sv_rand.RandSlv(i_din'LENGTH);
     WaitForClock(i_clock, 1);
   END PROCESS;
@@ -142,7 +175,13 @@ BEGIN
   --====================================================================
   proc_read: PROCESS
   BEGIN
-    i_rdreq <= sv_rand.RandSlv(1)(1) AND NOT i_reset;
+    IF g_wr_width = g_rd_width THEN
+      i_rdreq <= sv_rand.RandSlv(1)(1) AND NOT i_reset;
+    ELSIF g_wr_width > g_rd_width THEN
+      i_rdreq <= TO_UNSIGNED(sv_rand.FavorBig(0,1),1)(0) AND NOT i_reset;
+    ELSIF g_wr_width < g_rd_width THEN
+      i_rdreq <= TO_UNSIGNED(sv_rand.FavorSmall(0,1),1)(0) AND NOT i_reset;
+    END IF;
     WaitForClock(i_clock, 1);
   END PROCESS;
 
@@ -218,9 +257,11 @@ BEGIN
         IF g_rd_width = g_wr_width THEN
           sv_score.check(o_dout);
         ELSIF g_wr_width < g_rd_width THEN
-          Alert(id, "not implemented yet");
+          FOR i IN 0 TO g_rd_width/g_wr_width-1 LOOP
+            sv_score.check( o_dOUT( (I+1)*g_wr_width-1 DOWNTO I*g_wr_width ));
+          END LOOP;
         ELSIF g_wr_width > g_rd_width THEN
-          Alert(id, "not implemented yet");
+          sv_score.check(o_dout);
         END IF;
       END IF;
     END IF;

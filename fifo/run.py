@@ -17,6 +17,7 @@ def create_test_suite(prj, args):
 
     lib = prj.add_library("fifo_lib")
     lib.add_source_files(join(root, "./hdl/*.vhd"))
+    lib.add_source_files(join(root, "../ram/hdl/*.vhd"))
     lib.add_source_files(join(root, "./testbench/*.vhd"))
 
     prj.add_osvvm()
@@ -46,6 +47,22 @@ def create_test_suite(prj, args):
                         g_width=w
                     )
                 )
+    tb_fifo_sc_mixed = lib.test_bench("tb_fifo_sc_mixed")
+
+    for test in tb_fifo_sc_mixed.get_tests():
+        for wr_width in widths:
+            for rd_width in widths:
+                for wr_depth in depths:
+                    for reg in oreg:
+                        test.add_config(
+                            name="wrwidth=%d,rdwidth=%d,wrdepth=%d,reg=%s" % (wr_width, rd_width, wr_depth, reg),
+                            generics=dict(
+                                g_wr_width=wr_width,
+                                g_rd_width=rd_width,
+                                g_wr_depth=wr_depth,
+                                g_output_reg=reg
+                            )
+                        )
 
 
 if __name__ == "__main__":

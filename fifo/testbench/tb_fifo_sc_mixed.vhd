@@ -35,6 +35,9 @@ ARCHITECTURE tb OF tb_fifo_sc_mixed IS
   SIGNAL o_almost_empty     : STD_LOGIC;
   SIGNAL o_almost_full      : STD_LOGIC;
 
+  SIGNAL s_rdreq            : STD_LOGIC;
+  SIGNAL s_empty            : STD_LOGIC;
+
 
   SIGNAL id                 : AlertLogIDType;
   SHARED VARIABLE sv_rand   : RandomPType;
@@ -68,10 +71,10 @@ BEGIN
     test_runner_setup(runner, runner_cfg);
     sv_bin1.AddBins("Write while empty", ONE_BIN);
     sv_bin2.AddBins("Read while full", ONE_BIN);
-    --sv_bin3.AddBins("Read and write while almost empty", ONE_BIN);
-    --sv_bin4.AddBins("Read and write while almost full", ONE_BIN);
-    --sv_bin5.AddBins("Read without write when almost empty", ONE_BIN);
-    --sv_bin6.AddBins("Write without read when almost full", ONE_BIN);
+    sv_bin3.AddBins("Read and write while almost empty", ONE_BIN);
+    sv_bin4.AddBins("Read and write while almost full", ONE_BIN);
+    sv_bin5.AddBins("Read without write when almost empty", ONE_BIN);
+    sv_bin6.AddBins("Write without read when almost full", ONE_BIN);
 
     WaitForLevel(i_reset, '1');
     WaitForLevel(i_reset, '0');
@@ -81,16 +84,20 @@ BEGIN
       IF run("constrained_random") THEN
         LOOP
           WaitForClock(i_clock, 1);
-          sv_bin1.ICover( TO_INTEGER(i_wrreq = '1' AND o_empty = '1') );
-          sv_bin2.ICover( TO_INTEGER(i_rdreq = '1' AND o_full  = '1') );
+          sv_bin1.ICover( TO_INTEGER(i_wrreq = '1' AND i_rdreq = '0' AND o_empty = '1') );
+          sv_bin2.ICover( TO_INTEGER(i_wrreq = '0' AND i_rdreq = '1' AND o_full  = '1') );
+          sv_bin3.ICover( TO_INTEGER(i_wrreq = '1' AND i_rdreq = '1' AND o_almost_empty = '1') );
+          sv_bin4.ICover( TO_INTEGER(i_wrreq = '1' AND i_rdreq = '1' AND o_almost_full = '1') );
+          sv_bin5.ICover( TO_INTEGER(i_wrreq = '0' AND i_rdreq = '1' AND o_almost_empty = '1') );
+          sv_bin6.ICover( TO_INTEGER(i_wrreq = '1' AND i_rdreq = '0' AND o_almost_full = '1') );
 
           EXIT WHEN
             sv_bin1.IsCovered AND
-            sv_bin2.IsCovered; -- AND
-            --sv_bin3.IsCovered AND
-            --sv_bin4.IsCovered AND
-            --sv_bin5.IsCovered AND
-            --sv_bin6.IsCovered;
+            sv_bin2.IsCovered AND
+            sv_bin3.IsCovered AND
+            sv_bin4.IsCovered AND
+            sv_bin5.IsCovered AND
+            sv_bin6.IsCovered;
         END LOOP;
         Log(id, "coverage target reached");
 
@@ -106,10 +113,11 @@ BEGIN
 
     sv_bin1.writeBin;
     sv_bin2.writeBin;
-    --sv_bin3.writeBin;
-    --sv_bin4.writeBin;
-    --sv_bin5.writeBin;
-    --sv_bin6.writeBin;
+    sv_bin3.writeBin;
+    sv_bin4.writeBin;
+    sv_bin5.writeBin;
+    sv_bin6.writeBin;
+
     ReportAlerts;
     check(GetAffirmCount > 0, "test not self checking");
     check_equal(GetAlertCount, 0, "test failed");
@@ -185,12 +193,28 @@ BEGIN
     END IF;
   END PROCESS;
 
+  GEN_OUTREG: IF g_output_reg = FALSE GENERATE
+    s_rdreq <= i_rdreq;
+    s_empty <= o_empty;
+  ELSE GENERATE
+    PROCESS(i_reset, i_clock)
+    BEGIN
+      IF i_reset = '1' THEN
+        s_rdreq <= '0';
+        s_empty <= '0';
+      ELSIF RISING_EDGE(i_clock) THEN
+        s_rdreq <= i_rdreq;
+        s_empty <= o_empty;
+      END IF;
+    END PROCESS;
+  END GENERATE;
+
   proc_model_rd : PROCESS(i_clock, i_reset)
   BEGIN
     IF i_reset = '1' THEN
       -- todo
     ELSIF RISING_EDGE(i_clock) THEN
-      IF i_rdreq = '1' AND o_empty = '0' THEN
+      IF s_rdreq = '1' AND s_empty = '0' THEN
         IF g_rd_width = g_wr_width THEN
           sv_score.check(o_dout);
         ELSIF g_wr_width < g_rd_width THEN

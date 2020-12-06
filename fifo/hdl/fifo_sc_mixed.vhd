@@ -17,6 +17,8 @@ ENTITY fifo_sc_mixed IS
     i_wrreq     : IN STD_LOGIC;
     i_rdreq     : IN  STD_LOGIC;
     o_dout      : OUT STD_LOGIC_VECTOR(g_rd_width-1 DOWNTO 0);
+    o_usedw_wr  : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+    o_usedw_rd  : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
     o_empty     : OUT STD_LOGIC;
     o_full      : OUT STD_LOGIC;
     o_almost_empty  : OUT STD_LOGIC;
@@ -99,12 +101,6 @@ BEGIN
     END IF;
   END PROCESS;
 
-  s_empty <= '1' WHEN (r_wr_ptr_rd = r_rd_ptr_rd) ELSE '0';
-
-  s_full <= '1' WHEN (
-                r_wr_ptr_wr(r_wr_ptr_wr'HIGH)            = NOT r_rd_ptr_wr(r_rd_ptr_wr'HIGH) 
-            AND r_wr_ptr_wr(r_wr_ptr_wr'HIGH-1 DOWNTO 0) = r_rd_ptr_wr(r_rd_ptr_wr'HIGH-1 DOWNTO 0))
-          ELSE '0';
 
 
 
@@ -131,15 +127,31 @@ BEGIN
     );
 
 
+  --====================================================================
+  --= status
+  --====================================================================
+  s_empty <= '1' WHEN (r_wr_ptr_rd = r_rd_ptr_rd) ELSE '0';
 
-    --====================================================================
-    --= wire status signals
-    --====================================================================
-    o_full          <= s_full;
-    o_empty         <= s_empty;
-    o_almost_full   <= s_almost_full;
-    o_almost_empty  <= s_almost_empty;
+  s_full <= '1' WHEN (
+                r_wr_ptr_wr(r_wr_ptr_wr'HIGH)            = NOT r_rd_ptr_wr(r_rd_ptr_wr'HIGH)
+            AND r_wr_ptr_wr(r_wr_ptr_wr'HIGH-1 DOWNTO 0) = r_rd_ptr_wr(r_rd_ptr_wr'HIGH-1 DOWNTO 0))
+          ELSE '0';
+
+  s_almost_empty <= '1' WHEN r_usedw_rd < 4 ELSE '0';
+  s_almost_full  <= '1' WHEN r_usedw_wr > g_wr_depth-4;
+
+
+  --====================================================================
+  --= wire status signals
+  --====================================================================
+  o_full          <= s_full;
+  o_almost_full   <= s_almost_full;
+  o_usedw_wr      <= STD_LOGIC_VECTOR(RESIZE(r_usedw_wr, 32));
+
+  o_empty         <= s_empty;
+  o_almost_empty  <= s_almost_empty;
+  o_usedw_rd      <= STD_LOGIC_VECTOR(RESIZE(r_usedw_rd, 32));
+
 
 
 END ARCHITECTURE;
-

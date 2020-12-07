@@ -8,11 +8,11 @@ pipeline {
             steps {
                 sh 'python3 --version'
                 sh 'ghdl --version'
-                sh 'git clean -df'
             }
         }
         stage("simulate") {
             steps {
+                sh 'rm -rf ./ram/vunit_out ./ram/*.xml ./ram/*.txt ./fifo/vunit_out ./fifo/*.xml ./fifo/*.txt'
                 sh 'python3 ./run.py -p6 -x output.xml --xunit-xml-format jenkins --exit-0 --no-color --cover 1 --clean'
             }
         }
@@ -27,3 +27,4 @@ pipeline {
         }
     }
 }
+

@@ -59,8 +59,8 @@ BEGIN
   BEGIN
     id <= GetAlertLogID(tb_fifo_sc_mixed'INSTANCE_NAME);
     WAIT FOR 0 ns;
-    SetLogEnable(DEBUG, TRUE);
-    SetLogEnable(PASSED, TRUE );
+    SetLogEnable(DEBUG, FALSE);
+    SetLogEnable(PASSED, FALSE );
     WAIT;
   END PROCESS;
 

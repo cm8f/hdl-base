@@ -53,22 +53,11 @@ BEGIN
   BEGIN
     IF i_reset = '1' THEN
       r_wr_ptr_wr <= (OTHERS => '0');
-      r_rd_ptr_wr <= (OTHERS => '0');
     ELSIF RISING_EDGE(i_clock) THEN
       -- write ptr
       IF i_wrreq = '1' AND s_full = '0' THEN
         r_wr_ptr_wr <= r_wr_ptr_wr + 1;
       END IF;
-
-      --read ptr
-      IF r_rd_ptr_wr'LENGTH = r_rd_ptr_rd'LENGTH THEN
-        r_rd_ptr_wr <= r_rd_ptr_rd;
-      ELSIF r_rd_ptr_wr'LENGTH < r_rd_ptr_rd'LENGTH THEN
-        r_rd_ptr_wr <= r_rd_ptr_rd(r_rd_ptr_rd'HIGH DOWNTO c_factor_log);
-      ELSIF r_rd_ptr_wr'LENGTH > r_rd_ptr_rd'LENGTH THEN
-        r_rd_ptr_wr <= r_rd_ptr_rd & TO_UNSIGNED(0, c_factor_log);
-      END IF;
-
       -- used word processing
       r_usedw_wr <= r_wr_ptr_wr - r_rd_ptr_wr;
     END IF;
@@ -79,25 +68,34 @@ BEGIN
   proc_rd_ptr : PROCESS(i_reset, i_clock)
   BEGIN
     IF i_reset = '1' THEN
-      r_wr_ptr_rd <= (OTHERS => '0');
       r_rd_ptr_rd <= (OTHERS => '0');
     ELSIF RISING_EDGE(i_clock) THEN
       -- read pointer
       IF i_rdreq = '1' AND s_empty = '0' THEN
         r_rd_ptr_rd <= r_rd_ptr_rd + 1;
       END IF;
-
-      -- write pointer
-      IF r_wr_ptr_wr'LENGTH = r_wr_ptr_rd'LENGTH THEN
-        r_wr_ptr_rd <= r_wr_ptr_wr;
-      ELSIF r_wr_ptr_rd'LENGTH < r_wr_ptr_wr'LENGTH THEN
-        r_wr_ptr_rd <= r_wr_ptr_wr(r_wr_ptr_wr'HIGH DOWNTO c_factor_log);
-      ELSIF r_wr_ptr_rd'LENGTH > r_wr_ptr_wr'LENGTH THEN
-        r_wr_ptr_rd <= r_wr_ptr_wr & TO_UNSIGNED(0, C_factor_log);
-      END IF;
-
       -- used word processing
       r_usedw_rd <= r_wr_ptr_rd - r_rd_ptr_rd;
+    END IF;
+  END PROCESS;
+
+  proc_async_ptr_asign: PROCESS(ALL)
+  BEGIN
+    -- write pointer
+    IF r_wr_ptr_wr'LENGTH = r_wr_ptr_rd'LENGTH THEN
+      r_wr_ptr_rd <= r_wr_ptr_wr;
+    ELSIF r_wr_ptr_rd'LENGTH < r_wr_ptr_wr'LENGTH THEN
+      r_wr_ptr_rd <= r_wr_ptr_wr(r_wr_ptr_wr'HIGH DOWNTO c_factor_log);
+    ELSIF r_wr_ptr_rd'LENGTH > r_wr_ptr_wr'LENGTH THEN
+      r_wr_ptr_rd <= r_wr_ptr_wr & TO_UNSIGNED(0, C_factor_log);
+    END IF;
+    --read ptr
+    IF r_rd_ptr_wr'LENGTH = r_rd_ptr_rd'LENGTH THEN
+      r_rd_ptr_wr <= r_rd_ptr_rd;
+    ELSIF r_rd_ptr_wr'LENGTH < r_rd_ptr_rd'LENGTH THEN
+      r_rd_ptr_wr <= r_rd_ptr_rd(r_rd_ptr_rd'HIGH DOWNTO c_factor_log);
+    ELSIF r_rd_ptr_wr'LENGTH > r_rd_ptr_rd'LENGTH THEN
+      r_rd_ptr_wr <= r_rd_ptr_rd & TO_UNSIGNED(0, c_factor_log);
     END IF;
   END PROCESS;
 
@@ -132,9 +130,11 @@ BEGIN
   --====================================================================
   s_empty <= '1' WHEN (r_wr_ptr_rd = r_rd_ptr_rd) ELSE '0';
 
-  s_full <= '1' WHEN (
-                r_wr_ptr_wr(r_wr_ptr_wr'HIGH)            = NOT r_rd_ptr_wr(r_rd_ptr_wr'HIGH)
-            AND r_wr_ptr_wr(r_wr_ptr_wr'HIGH-1 DOWNTO 0) = r_rd_ptr_wr(r_rd_ptr_wr'HIGH-1 DOWNTO 0))
+--  s_full <= '1' WHEN (
+--                r_wr_ptr_wr(r_wr_ptr_wr'HIGH)            = NOT r_rd_ptr_wr(r_rd_ptr_wr'HIGH)
+--            AND r_wr_ptr_wr(r_wr_ptr_wr'HIGH-1 DOWNTO 0) = r_rd_ptr_wr(r_rd_ptr_wr'HIGH-1 DOWNTO 0))
+--          ELSE '0';
+  s_full <= '1' WHEN (r_wr_ptr_wr(r_wr_ptr_wr'HIGH-1 DOWNTO 0)+1 = r_rd_ptr_wr(r_rd_ptr_wr'HIGH-1 DOWNTO 0))
           ELSE '0';
 
   s_almost_empty <= '1' WHEN r_usedw_rd < 4 ELSE '0';

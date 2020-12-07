@@ -8,6 +8,7 @@ pipeline {
             steps {
                 sh 'python3 --version'
                 sh 'ghdl --version'
+                sh 'git clean -df'
             }
         }
         stage("simulate") {

@@ -131,7 +131,7 @@ BEGIN
     check_equal(GetAlertCount, 0, "test failed");
     test_runner_cleanup(runner);
   END PROCESS;
-  test_runner_watchdog(runner, 5 ms);
+  test_runner_watchdog(runner, 50 ms);
 
 
   --====================================================================

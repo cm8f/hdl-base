@@ -15,9 +15,12 @@ def create_test_suite(prj, args):
     losvvm = prj.library("osvvm")
     losvvm.add_source_files(join(root, "../osvvm/*"))
 
-    lib = prj.add_library("fifo_lib")
+    try:
+        lib = prj.library("work_lib")
+    except:
+        lib = prj.add_library("work_lib")
     lib.add_source_files(join(root, "./hdl/*.vhd"))
-    lib.add_source_files(join(root, "../ram/hdl/*.vhd"))
+    #lib.add_source_files(join(root, "../ram/hdl/*.vhd"))
     lib.add_source_files(join(root, "./testbench/*.vhd"))
 
     prj.add_osvvm()
@@ -32,23 +35,11 @@ def create_test_suite(prj, args):
             lib.set_sim_option("enable_coverage", True)
             lib.set_compile_option("enable_coverage", True)
 
-    tb_fifo_sc = lib.test_bench("tb_fifo_sc")
-
     depths = [64, 128]
     widths = [8, 16, 32]
     oreg = [True, False]
-    for test in tb_fifo_sc.get_tests():
-        for d in depths:
-            for w in widths:
-                test.add_config(
-                    name="width=%d,depth=%d" %(w, d),
-                    generics=dict(
-                        g_depth=d,
-                        g_width=w
-                    )
-                )
-    tb_fifo_sc_mixed = lib.test_bench("tb_fifo_sc_mixed")
 
+    tb_fifo_sc_mixed = lib.test_bench("tb_fifo_sc_mixed")
     for test in tb_fifo_sc_mixed.get_tests():
         for wr_width in widths:
             for rd_width in widths:

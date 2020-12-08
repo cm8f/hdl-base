@@ -12,7 +12,10 @@ def post_run(results):
 def create_test_suite(prj, args):
     root = dirname(__file__)
 
-    lib = prj.add_library("ram_lib")
+    try:
+        lib = prj.library("work_lib")
+    except:
+        lib = prj.add_library("work_lib")
     lib.add_source_files(join(root, "./hdl/*.vhd"))
     lib.add_source_files(join(root, "./testbench/*.vhd"))
 

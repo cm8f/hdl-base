@@ -35,7 +35,7 @@ def create_test_suite(prj, args):
             lib.set_sim_option("enable_coverage", True)
             lib.set_compile_option("enable_coverage", True)
 
-    depths = [64, 128]
+    depths = [64, 128, 256, 512]
     widths = [8, 16, 32]
     oreg = [True, False]
 

@@ -4,7 +4,7 @@ USE IEEE.NUMERIC_STD.ALL;
 USE IEEE.math_real.ALL;
 
 LIBRARY OSVVM;
-CONTEXT OSVVM.OSVVMcontext;
+CONTEXT OSVVM.OSVVMContext;
 USE OSVVM.ScoreBoardPkg_slv.ALL;
 
 LIBRARY VUNIT_LIB;
@@ -158,13 +158,7 @@ BEGIN
   --====================================================================
   proc_write: PROCESS
   BEGIN
-    --IF g_wr_width = g_rd_width THEN
-      i_wrreq <= sv_rand.RandSlv(1)(1) AND NOT i_reset;
-    --ELSIF g_wr_width > g_rd_width THEN
-    --  i_wrreq <= TO_UNSIGNED(sv_rand.FavorSmall(0,1),1)(0) AND NOT i_reset;
-    --ELSIF g_wr_width < g_rd_width THEN
-    --  i_wrreq <= TO_UNSIGNED(sv_rand.FavorBig(0,1),1)(0) AND NOT i_reset;
-    --END IF;
+    i_wrreq <= sv_rand.RandSlv(1)(1) AND NOT i_reset;
     FOR I IN 0 TO sv_rand.RandInt(1, g_wr_depth) LOOP
       i_din   <= sv_rand.RandSlv(i_din'LENGTH);
       WaitForClock(i_clock, 1);
@@ -177,13 +171,7 @@ BEGIN
   --====================================================================
   proc_read: PROCESS
   BEGIN
-    --IF g_wr_width = g_rd_width THEN
-      i_rdreq <= sv_rand.RandSlv(1)(1) AND NOT i_reset;
-    --ELSIF g_wr_width > g_rd_width THEN
-    --  i_rdreq <= TO_UNSIGNED(sv_rand.FavorBig(0,1),1)(0) AND NOT i_reset;
-    --ELSIF g_wr_width < g_rd_width THEN
-    --  i_rdreq <= TO_UNSIGNED(sv_rand.FavorSmall(0,1),1)(0) AND NOT i_reset;
-    --END IF;
+    i_rdreq <= sv_rand.RandSlv(1)(1) AND NOT i_reset;
     FOR I IN 0 TO sv_rand.RandInt(1, g_wr_depth) LOOP
       WaitForClock(i_clock, 1);
     END LOOP;

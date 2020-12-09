@@ -27,11 +27,9 @@ ENTITY fifo_sc_mixed IS
 END ENTITY;
 
 ARCHITECTURE rtl OF fifo_sc_mixed IS
-
   CONSTANT c_rd_depth   : INTEGER := g_wr_depth * g_wr_width / g_rd_width;
   CONSTANT c_factor     : INTEGER := maximum(g_wr_width, g_rd_width) / minimum(g_wr_width, g_rd_width);
   CONSTANT c_factor_log : INTEGER := INTEGER(CEIL(LOG2(REAL(c_factor))));
-
   -- pointer handling write domain
   SIGNAL r_wr_ptr_wr    : UNSIGNED( INTEGER(CEIL(LOG2(REAL(g_wr_depth)))) DOWNTO 0 );
   SIGNAL r_rd_ptr_wr    : UNSIGNED( INTEGER(CEIL(LOG2(REAL(g_wr_depth)))) DOWNTO 0 );
@@ -130,10 +128,6 @@ BEGIN
   --====================================================================
   s_empty <= '1' WHEN (r_wr_ptr_rd = r_rd_ptr_rd) ELSE '0';
 
---  s_full <= '1' WHEN (
---                r_wr_ptr_wr(r_wr_ptr_wr'HIGH)            = NOT r_rd_ptr_wr(r_rd_ptr_wr'HIGH)
---            AND r_wr_ptr_wr(r_wr_ptr_wr'HIGH-1 DOWNTO 0) = r_rd_ptr_wr(r_rd_ptr_wr'HIGH-1 DOWNTO 0))
---          ELSE '0';
   s_full <= '1' WHEN (r_wr_ptr_wr(r_wr_ptr_wr'HIGH-1 DOWNTO 0)+1 = r_rd_ptr_wr(r_rd_ptr_wr'HIGH-1 DOWNTO 0))
           ELSE '0';
 

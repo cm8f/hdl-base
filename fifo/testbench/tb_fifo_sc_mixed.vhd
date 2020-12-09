@@ -75,8 +75,8 @@ BEGIN
     sv_bin2.AddBins("Read while full", ONE_BIN);
     sv_bin3.AddBins("Read and write while almost empty", ONE_BIN);
     sv_bin4.AddBins("Read and write while almost full", ONE_BIN);
-    sv_bin5.AddBins("Read without write when almost empty", ONE_BIN);
-    sv_bin6.AddBins("Write without read when almost full", ONE_BIN);
+    sv_bin5.AddBins("Read when almost empty", ONE_BIN);
+    sv_bin6.AddBins("Write when almost full", ONE_BIN);
 
     WaitForLevel(i_reset, '1');
     WaitForLevel(i_reset, '0');
@@ -86,12 +86,12 @@ BEGIN
       IF run("constrained_random") THEN
         LOOP
           WaitForClock(i_clock, 1);
-          sv_bin1.ICover( TO_INTEGER(i_wrreq = '1' AND i_rdreq = '0' AND o_empty = '1') );
-          sv_bin2.ICover( TO_INTEGER(i_wrreq = '0' AND i_rdreq = '1' AND o_full  = '1') );
+          sv_bin1.ICover( TO_INTEGER(i_wrreq = '1' AND o_empty = '1') );
+          sv_bin2.ICover( TO_INTEGER(i_rdreq = '1' AND o_full  = '1') );
           sv_bin3.ICover( TO_INTEGER(i_wrreq = '1' AND i_rdreq = '1' AND o_almost_empty = '1') );
           sv_bin4.ICover( TO_INTEGER(i_wrreq = '1' AND i_rdreq = '1' AND o_almost_full = '1') );
-          sv_bin5.ICover( TO_INTEGER(i_wrreq = '0' AND i_rdreq = '1' AND o_almost_empty = '1') );
-          sv_bin6.ICover( TO_INTEGER(i_wrreq = '1' AND i_rdreq = '0' AND o_almost_full = '1') );
+          sv_bin5.ICover( TO_INTEGER(i_rdreq = '1' AND o_almost_empty = '1') );
+          sv_bin6.ICover( TO_INTEGER(i_wrreq = '1' AND o_almost_full = '1') );
 
           EXIT WHEN
             sv_bin1.IsCovered AND
@@ -131,7 +131,7 @@ BEGIN
     check_equal(GetAlertCount, 0, "test failed");
     test_runner_cleanup(runner);
   END PROCESS;
-  test_runner_watchdog(runner, 50 ms);
+  test_runner_watchdog(runner, 10 ms);
 
 
   --====================================================================
@@ -158,15 +158,17 @@ BEGIN
   --====================================================================
   proc_write: PROCESS
   BEGIN
-    IF g_wr_width = g_rd_width THEN
+    --IF g_wr_width = g_rd_width THEN
       i_wrreq <= sv_rand.RandSlv(1)(1) AND NOT i_reset;
-    ELSIF g_wr_width > g_rd_width THEN
-      i_wrreq <= TO_UNSIGNED(sv_rand.FavorSmall(0,1),1)(0) AND NOT i_reset;
-    ELSIF g_wr_width < g_rd_width THEN
-      i_wrreq <= TO_UNSIGNED(sv_rand.FavorBig(0,1),1)(0) AND NOT i_reset;
-    END IF;
-    i_din   <= sv_rand.RandSlv(i_din'LENGTH);
-    WaitForClock(i_clock, 1);
+    --ELSIF g_wr_width > g_rd_width THEN
+    --  i_wrreq <= TO_UNSIGNED(sv_rand.FavorSmall(0,1),1)(0) AND NOT i_reset;
+    --ELSIF g_wr_width < g_rd_width THEN
+    --  i_wrreq <= TO_UNSIGNED(sv_rand.FavorBig(0,1),1)(0) AND NOT i_reset;
+    --END IF;
+    FOR I IN 0 TO sv_rand.RandInt(1, g_wr_depth) LOOP
+      i_din   <= sv_rand.RandSlv(i_din'LENGTH);
+      WaitForClock(i_clock, 1);
+    END LOOP;
   END PROCESS;
 
 
@@ -175,14 +177,16 @@ BEGIN
   --====================================================================
   proc_read: PROCESS
   BEGIN
-    IF g_wr_width = g_rd_width THEN
+    --IF g_wr_width = g_rd_width THEN
       i_rdreq <= sv_rand.RandSlv(1)(1) AND NOT i_reset;
-    ELSIF g_wr_width > g_rd_width THEN
-      i_rdreq <= TO_UNSIGNED(sv_rand.FavorBig(0,1),1)(0) AND NOT i_reset;
-    ELSIF g_wr_width < g_rd_width THEN
-      i_rdreq <= TO_UNSIGNED(sv_rand.FavorSmall(0,1),1)(0) AND NOT i_reset;
-    END IF;
-    WaitForClock(i_clock, 1);
+    --ELSIF g_wr_width > g_rd_width THEN
+    --  i_rdreq <= TO_UNSIGNED(sv_rand.FavorBig(0,1),1)(0) AND NOT i_reset;
+    --ELSIF g_wr_width < g_rd_width THEN
+    --  i_rdreq <= TO_UNSIGNED(sv_rand.FavorSmall(0,1),1)(0) AND NOT i_reset;
+    --END IF;
+    FOR I IN 0 TO sv_rand.RandInt(1, g_wr_depth) LOOP
+      WaitForClock(i_clock, 1);
+    END LOOP;
   END PROCESS;
 
 

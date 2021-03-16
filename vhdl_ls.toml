@@ -3,6 +3,9 @@ work.files = [
   './ram/**/*.vhd',
   './fifo/**/*.vhd',
   './sync/**/*.vhd',
+  './i2c/**/*.vhd',
+  './spi/**/*.vhd',
+  './uart/**/*.vhd',
 ]
 
 osvvm.files = [

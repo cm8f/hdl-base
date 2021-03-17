@@ -1,0 +1,66 @@
+[*]
+[*] GTKWave Analyzer v3.3.108 (w)1999-2020 BSI
+[*] Wed Mar 17 19:53:57 2021
+[*]
+[dumpfile] "/home/phil/Dokumente/git_repos/hdl-base/uart/vunit_out/test_output/work_lib.tb_uart.tx_8d108ebf16224717d21b9f936f9211e19c8ad72c/ghdl/wave.ghw"
+[dumpfile_mtime] "Wed Mar 17 19:50:40 2021"
+[dumpfile_size] 562620
+[savefile] "/home/phil/Dokumente/git_repos/hdl-base/uart/testbench/tb_uart.gtkw"
+[timestart] 0
+[size] 3840 2065
+[pos] -1 -1
+*-26.548876 28900000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top.
+[treeopen] top.tb_uart.
+[treeopen] top.tb_uart.inst_uart_rx.
+[sst_width] 327
+[signals_width] 394
+[sst_expanded] 1
+[sst_vpaned_height] 656
+@22
+#{top.tb_uart.inst_uart_tx.i_cfg_divider[15:0]} top.tb_uart.inst_uart_tx.i_cfg_divider[15] top.tb_uart.inst_uart_tx.i_cfg_divider[14] top.tb_uart.inst_uart_tx.i_cfg_divider[13] top.tb_uart.inst_uart_tx.i_cfg_divider[12] top.tb_uart.inst_uart_tx.i_cfg_divider[11] top.tb_uart.inst_uart_tx.i_cfg_divider[10] top.tb_uart.inst_uart_tx.i_cfg_divider[9] top.tb_uart.inst_uart_tx.i_cfg_divider[8] top.tb_uart.inst_uart_tx.i_cfg_divider[7] top.tb_uart.inst_uart_tx.i_cfg_divider[6] top.tb_uart.inst_uart_tx.i_cfg_divider[5] top.tb_uart.inst_uart_tx.i_cfg_divider[4] top.tb_uart.inst_uart_tx.i_cfg_divider[3] top.tb_uart.inst_uart_tx.i_cfg_divider[2] top.tb_uart.inst_uart_tx.i_cfg_divider[1] top.tb_uart.inst_uart_tx.i_cfg_divider[0]
+@28
+top.tb_uart.inst_uart_tx.i_clock
+@22
+#{top.tb_uart.inst_uart_tx.i_data[7:0]} top.tb_uart.inst_uart_tx.i_data[7] top.tb_uart.inst_uart_tx.i_data[6] top.tb_uart.inst_uart_tx.i_data[5] top.tb_uart.inst_uart_tx.i_data[4] top.tb_uart.inst_uart_tx.i_data[3] top.tb_uart.inst_uart_tx.i_data[2] top.tb_uart.inst_uart_tx.i_data[1] top.tb_uart.inst_uart_tx.i_data[0]
+@28
+top.tb_uart.inst_uart_tx.i_data_valid
+top.tb_uart.inst_uart_tx.o_tx_busy
+top.tb_uart.inst_uart_tx.o_tx_done
+top.tb_uart.inst_uart_tx.o_uart_tx
+@420
+top.tb_uart.inst_uart_tx.r_bit_idx
+@22
+#{top.tb_uart.inst_uart_tx.r_clk_count[15:0]} top.tb_uart.inst_uart_tx.r_clk_count[15] top.tb_uart.inst_uart_tx.r_clk_count[14] top.tb_uart.inst_uart_tx.r_clk_count[13] top.tb_uart.inst_uart_tx.r_clk_count[12] top.tb_uart.inst_uart_tx.r_clk_count[11] top.tb_uart.inst_uart_tx.r_clk_count[10] top.tb_uart.inst_uart_tx.r_clk_count[9] top.tb_uart.inst_uart_tx.r_clk_count[8] top.tb_uart.inst_uart_tx.r_clk_count[7] top.tb_uart.inst_uart_tx.r_clk_count[6] top.tb_uart.inst_uart_tx.r_clk_count[5] top.tb_uart.inst_uart_tx.r_clk_count[4] top.tb_uart.inst_uart_tx.r_clk_count[3] top.tb_uart.inst_uart_tx.r_clk_count[2] top.tb_uart.inst_uart_tx.r_clk_count[1] top.tb_uart.inst_uart_tx.r_clk_count[0]
+@420
+top.tb_uart.inst_uart_tx.r_state
+@22
+#{top.tb_uart.inst_uart_tx.r_tx_data_sr[7:0]} top.tb_uart.inst_uart_tx.r_tx_data_sr[7] top.tb_uart.inst_uart_tx.r_tx_data_sr[6] top.tb_uart.inst_uart_tx.r_tx_data_sr[5] top.tb_uart.inst_uart_tx.r_tx_data_sr[4] top.tb_uart.inst_uart_tx.r_tx_data_sr[3] top.tb_uart.inst_uart_tx.r_tx_data_sr[2] top.tb_uart.inst_uart_tx.r_tx_data_sr[1] top.tb_uart.inst_uart_tx.r_tx_data_sr[0]
+@28
+top.tb_uart.inst_uart_tx.r_tx_done
+@200
+-rx
+@22
+#{top.tb_uart.inst_uart_rx.i_cfg_divider[15:0]} top.tb_uart.inst_uart_rx.i_cfg_divider[15] top.tb_uart.inst_uart_rx.i_cfg_divider[14] top.tb_uart.inst_uart_rx.i_cfg_divider[13] top.tb_uart.inst_uart_rx.i_cfg_divider[12] top.tb_uart.inst_uart_rx.i_cfg_divider[11] top.tb_uart.inst_uart_rx.i_cfg_divider[10] top.tb_uart.inst_uart_rx.i_cfg_divider[9] top.tb_uart.inst_uart_rx.i_cfg_divider[8] top.tb_uart.inst_uart_rx.i_cfg_divider[7] top.tb_uart.inst_uart_rx.i_cfg_divider[6] top.tb_uart.inst_uart_rx.i_cfg_divider[5] top.tb_uart.inst_uart_rx.i_cfg_divider[4] top.tb_uart.inst_uart_rx.i_cfg_divider[3] top.tb_uart.inst_uart_rx.i_cfg_divider[2] top.tb_uart.inst_uart_rx.i_cfg_divider[1] top.tb_uart.inst_uart_rx.i_cfg_divider[0]
+@28
+top.tb_uart.inst_uart_rx.i_clock
+top.tb_uart.inst_uart_rx.i_uart_rx
+@22
+#{top.tb_uart.inst_uart_rx.o_data[7:0]} top.tb_uart.inst_uart_rx.o_data[7] top.tb_uart.inst_uart_rx.o_data[6] top.tb_uart.inst_uart_rx.o_data[5] top.tb_uart.inst_uart_rx.o_data[4] top.tb_uart.inst_uart_rx.o_data[3] top.tb_uart.inst_uart_rx.o_data[2] top.tb_uart.inst_uart_rx.o_data[1] top.tb_uart.inst_uart_rx.o_data[0]
+@28
+top.tb_uart.inst_uart_rx.o_data_valid
+@420
+top.tb_uart.inst_uart_rx.r_bit_idx
+@22
+#{top.tb_uart.inst_uart_rx.r_data_byte[7:0]} top.tb_uart.inst_uart_rx.r_data_byte[7] top.tb_uart.inst_uart_rx.r_data_byte[6] top.tb_uart.inst_uart_rx.r_data_byte[5] top.tb_uart.inst_uart_rx.r_data_byte[4] top.tb_uart.inst_uart_rx.r_data_byte[3] top.tb_uart.inst_uart_rx.r_data_byte[2] top.tb_uart.inst_uart_rx.r_data_byte[1] top.tb_uart.inst_uart_rx.r_data_byte[0]
+#{top.tb_uart.inst_uart_rx.r_halfperiod_counter[15:0]} top.tb_uart.inst_uart_rx.r_halfperiod_counter[15] top.tb_uart.inst_uart_rx.r_halfperiod_counter[14] top.tb_uart.inst_uart_rx.r_halfperiod_counter[13] top.tb_uart.inst_uart_rx.r_halfperiod_counter[12] top.tb_uart.inst_uart_rx.r_halfperiod_counter[11] top.tb_uart.inst_uart_rx.r_halfperiod_counter[10] top.tb_uart.inst_uart_rx.r_halfperiod_counter[9] top.tb_uart.inst_uart_rx.r_halfperiod_counter[8] top.tb_uart.inst_uart_rx.r_halfperiod_counter[7] top.tb_uart.inst_uart_rx.r_halfperiod_counter[6] top.tb_uart.inst_uart_rx.r_halfperiod_counter[5] top.tb_uart.inst_uart_rx.r_halfperiod_counter[4] top.tb_uart.inst_uart_rx.r_halfperiod_counter[3] top.tb_uart.inst_uart_rx.r_halfperiod_counter[2] top.tb_uart.inst_uart_rx.r_halfperiod_counter[1] top.tb_uart.inst_uart_rx.r_halfperiod_counter[0]
+@28
+top.tb_uart.inst_uart_rx.r_rx_data
+@22
+#{top.tb_uart.inst_uart_rx.r_rx_data_p[3:0]} top.tb_uart.inst_uart_rx.r_rx_data_p[3] top.tb_uart.inst_uart_rx.r_rx_data_p[2] top.tb_uart.inst_uart_rx.r_rx_data_p[1] top.tb_uart.inst_uart_rx.r_rx_data_p[0]
+@28
+top.tb_uart.inst_uart_rx.r_rx_valid
+@420
+top.tb_uart.inst_uart_rx.sm_state
+[pattern_trace] 1
+[pattern_trace] 0

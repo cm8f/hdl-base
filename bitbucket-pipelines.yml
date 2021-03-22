@@ -3,6 +3,6 @@ image: ghdl/vunit:gcc
 pipelines:
   default:
     - step:
-      name: 'simulate'
-      script:
-        - python3 ./run.py -p 6 -x output.xml --xunit-xml-format jenkins --exit-0 --no-color --cover 1 --clean 
+        name: 'simulate'
+        script:
+          - python3 ./run.py -p 6 -x output.xml --xunit-xml-format jenkins --exit-0 --no-color --cover 1 --clean 

@@ -115,7 +115,25 @@ BEGIN
     s_rx_serial WHEN '0', s_tx_serial WHEN OTHERS;
 
 
+  inst_wrapper: ENTITY WORK.uart_wrapper_top 
+    GENERIC MAP(
+      g_parity        => 0,
+      g_stopbits      => 1
+    )
+    PORT MAP(
+      i_clock         => s_clock,
+      i_cfg_divider   => STD_LOGIC_VECTOR(TO_UNSIGNED(c_cycles_per_bit, 16)),
+      o_rx_valid      => s_rx_valid,
+      o_rx_data       => s_rx_byte,
+      i_tx_valid      => s_tx_valid,
+      i_tx_data       => s_tx_byte,
+      o_tx_busy       => OPEN,
+      o_tx_done       => s_tx_done,
+      i_uart_rx       => s_rx_serial_muxed,
+      o_uart_tx       => s_tx_serial
+    );
 
+    /*
   -- Instantiate UART transmitter
   inst_uart_tx : ENTITY WORK.uart_tx
     port map (
@@ -138,6 +156,7 @@ BEGIN
       o_data_valid  => s_rx_valid,
       o_data        => s_rx_byte
       );
+  */
 
 
   END ARCHITECTURE;

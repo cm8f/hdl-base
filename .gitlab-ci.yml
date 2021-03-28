@@ -1,0 +1,22 @@
+image: ghdl/vunit:gcc
+
+before_script:
+  - python -V  # Print out python version for debugging
+  - pip install vunit_hdl
+  - ghdl -v 
+
+build: 
+  script: 
+    - ./run.py --compile --cover 1 
+
+elaborate:
+  script:
+    - ./run.py -p 4 --elaborate --cover 1 
+
+run: 
+  script: 
+    - ./run.py -p 4 -x output.xml --xunit-xml-format jenkins --exit-0 --no-color --cover 1'
+  artifact:
+    paths:
+      - ./*.xml
+      - ./*.txt

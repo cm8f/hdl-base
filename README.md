@@ -1,5 +1,7 @@
 # README #
 
+[![](https://github.com/cm8f/hdl-base/workflows/VUnit%20Tests/badge.svg)](https://github.com/cm8f/hdl-base/actions)
+
 This README would normally document whatever steps are necessary to get your application up and running.
 
 ### What is this repository for? ###

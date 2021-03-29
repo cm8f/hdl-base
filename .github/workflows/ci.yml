@@ -8,6 +8,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - uses: docker://ghdl/vunit:mcode
+      - uses: docker://ghdl/vunit:gcc
         with:
-          args: ./run.py -p6 -x output.xml --xunit-xml-format jenkins --exit-0 --no-color --cover 1 
+          args: python3 ./run.py -p 6 --cover 1

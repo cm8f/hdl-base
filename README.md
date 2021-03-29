@@ -1,6 +1,6 @@
 # README #
 
-[![](https://github.com/cm8f/hdl-base/workflows/VUnit%20Tests/badge.svg)](https://github.com/cm8f/hdl-base/actions)
+![Vunit Tests](https://github.com/cm8f/hdl-base/actions/workflows/ci.yml/badge.svg)
 
 This README would normally document whatever steps are necessary to get your application up and running.
 

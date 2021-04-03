@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  test:
+  vunit-ghdl-sim:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -11,3 +11,11 @@ jobs:
       - uses: docker://ghdl/vunit:gcc
         with:
           args: python3 ./run.py -p 6 --cover 1
+
+      - uses: codecov/codecov-action@v1.3.1
+        with:
+          files: ./coverage.xml # optional
+          flags: unittests # optional
+          name: codecov # optional
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)

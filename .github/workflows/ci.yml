@@ -14,7 +14,7 @@ jobs:
 
       - uses: codecov/codecov-action@v1.3.1
         with:
-          files: ./coverage.xml # optional
+          files: ./coverage.txt # optional
           flags: unittests # optional
           name: codecov # optional
           fail_ci_if_error: true # optional (default = false)

@@ -9,8 +9,8 @@ import imp
 def post_run(results):
     results.merge_coverage(file_name="coverage_data")
     if VU.get_simulator_name() == "ghdl":
-        call(["gcovr", "--exclude-unreachable-branches", "-x", "coverage.xml", "coverage_data"])
-        call(["gcovr", "--exclude-unreachable-branches", "-o", "coverage.txt", "coverage_data"])
+        call(["gcovr", "--exclude-unreachable-branches", "--exclude-unreachable-branches", "-x", "coverage.xml", "coverage_data"])
+        call(["gcovr", "--exclude-unreachable-branches", "--exclude-unreachable-branches", "-o", "coverage.txt", "coverage_data"])
 
 def create_test_suites(prj, args):
     root = dirname(__file__)

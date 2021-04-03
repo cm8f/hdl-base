@@ -1,31 +1,68 @@
 # README #
 
 ![Vunit Tests](https://github.com/cm8f/hdl-base/actions/workflows/ci.yml/badge.svg)
-
-This README would normally document whatever steps are necessary to get your application up and running.
+[![codecov](https://codecov.io/gh/cm8f/hdl-base/branch/master/graph/badge.svg?token=UYQFIO5X9O)](https://codecov.io/gh/cm8f/hdl-base)
+![License](https://img.shields.io/github/license/cm8f/hdl-base)
 
 ### What is this repository for? ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+This is a VHDL repository containing some base components (vendor independent) 
 
-### How do I get set up? ###
+Currently available IPs
+  * RAM
+    - Single Port RAM
+    - Simple Dualport RAM
+    - True Dualport RAM
+  * FIFOs
+    - Single Clock Mixed Width FIFO
+  * Synchronizers
+    - Reset Synchronisation
+  * Serial Protocols
+    - Simple UART
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+### How do I get set up?/How to run tests ###
 
-### Contribution guidelines ###
+Requirements
+  * Python >= 3.7
+  * vunit_hdl
+  * ghdl/Modelsim
 
-* Writing tests
-* Code review
-* Other guidelines
+#### Arch Linux/Manjaro ####
+``` 
+sudo pacman -S python python-pip
+sudo pacman -S ghdl-gcc gcovr
+pip install vunit_hdl
+python ./run.py -p6
+```
 
-### Who do I talk to? ###
+#### Debian/Ubuntu ####
+``` 
+sudo apt-get install python3 python3-pip
+sudo apt-get install ghdl gtkwave gcovr
+pip install vunit_hdl
+python ./run.py -p6
+```
 
-* Repo owner or admin
-* Other community or team contact
+#### Windows ####
+Your best bet is probably using Windows Subsystem for Linux and use instructions above. If that is not possible for you: 
+
+install python >= 3.7 (i. e. Anaconda)
+
+Install Modelsim Intel Starter Edition or GHDL
+
+Add both to your PATH environment variable.
+
+Start powershell and run 
+```
+pip install vunit_hdl
+```
+afterwards you can start simulation by running
+```
+python ./run.py -p6
+``` 
+
+### Known Issues ###
+Mixed Width FIFO simulaiton does not converge with Modelsim. Probably due to differences in randomization funcitons GHDL vs. Modelsim. 
+
+Temporary Workarround: Use GHDL instead.
+

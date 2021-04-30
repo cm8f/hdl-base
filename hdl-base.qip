@@ -1,0 +1,11 @@
+set_global_assignment -library "work" -name VHDL_FILE [file join $::quartus(qip_path) "fifo/hdl/fifo_sc_mixed.vhd"]
+
+set_global_assignment -library "work" -name VHDL_FILE [file join $::quartus(qip_path) "ram/hdl/ram_tdp.vhd"]
+set_global_assignment -library "work" -name VHDL_FILE [file join $::quartus(qip_path) "ram/hdl/ram_sp.vhd"]
+set_global_assignment -library "work" -name VHDL_FILE [file join $::quartus(qip_path) "ram/hdl/ram_sdp.vhd"]
+
+set_global_assignment -library "work" -name VHDL_FILE [file join $::quartus(qip_path) "sync/hdl/reset_control.vhd"]
+
+set_global_assignment -library "work" -name VHDL_FILE [file join $::quartus(qip_path) "uart/hdl/uart_tx.vhd"]
+set_global_assignment -library "work" -name VHDL_FILE [file join $::quartus(qip_path) "uart/hdl/uart_rx.vhd"]
+set_global_assignment -library "work" -name VHDL_FILE [file join $::quartus(qip_path) "uart/hdl/uart_wrapper_top.vhd"]

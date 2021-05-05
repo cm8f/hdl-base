@@ -27,8 +27,26 @@ ENTITY fifo_sc_mixed IS
 END ENTITY;
 
 ARCHITECTURE rtl OF fifo_sc_mixed IS
+  FUNCTION f_max(a, b : INTEGER) RETURN INTEGER IS 
+  BEGIN 
+    IF a > b THEN 
+      RETURN a;
+    ELSE 
+      RETURN b;
+    END IF;
+  END FUNCTION;
+
+  FUNCTION f_min(a,b : INTEGER) RETURN INTEGER IS 
+  BEGIN 
+    IF a < b THEN 
+      RETURN a;
+    ELSE 
+      RETURN b;
+    END IF;
+  END FUNCTION;
+
   CONSTANT c_rd_depth   : INTEGER := g_wr_depth * g_wr_width / g_rd_width;
-  CONSTANT c_factor     : INTEGER := maximum(g_wr_width, g_rd_width) / minimum(g_wr_width, g_rd_width);
+  CONSTANT c_factor     : INTEGER := f_max(g_wr_width, g_rd_width) / f_min(g_wr_width, g_rd_width);
   CONSTANT c_factor_log : INTEGER := INTEGER(CEIL(LOG2(REAL(c_factor))));
   -- pointer handling write domain
   SIGNAL r_wr_ptr_wr    : UNSIGNED( INTEGER(CEIL(LOG2(REAL(g_wr_depth)))) DOWNTO 0 );

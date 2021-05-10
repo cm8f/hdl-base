@@ -3,20 +3,19 @@ USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 USE IEEE.math_real.ALL;
 
-ENTITY fifo_sc_mixed IS
+ENTITY fifo_sc_single IS
   GENERIC (
-    g_wr_width  : INTEGER := 16;
-    g_rd_width  : INTEGER := 16;
-    g_wr_depth  : INTEGER := 512;
-    g_output_reg: BOOLEAN := FALSE
+    g_width     : INTEGER := 32;
+    g_depth     : INTEGER := 512;
+    g_output_reg: BOOLEAN := TRUE
   );
   PORT(
     i_clock     : IN STD_LOGIC;
     i_reset     : IN STD_LOGIC;
-    i_din       : IN STD_LOGIC_VECTOR(g_wr_width-1 DOWNTO 0);
+    i_din       : IN STD_LOGIC_VECTOR(g_width-1 DOWNTO 0);
     i_wrreq     : IN STD_LOGIC;
     i_rdreq     : IN  STD_LOGIC;
-    o_dout      : OUT STD_LOGIC_VECTOR(g_rd_width-1 DOWNTO 0);
+    o_dout      : OUT STD_LOGIC_VECTOR(g_width-1 DOWNTO 0);
     o_usedw_wr  : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
     o_usedw_rd  : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
     o_empty     : OUT STD_LOGIC;
@@ -26,34 +25,14 @@ ENTITY fifo_sc_mixed IS
   );
 END ENTITY;
 
-ARCHITECTURE rtl OF fifo_sc_mixed IS
-  FUNCTION f_max(a, b : INTEGER) RETURN INTEGER IS 
-  BEGIN 
-    IF a > b THEN 
-      RETURN a;
-    ELSE 
-      RETURN b;
-    END IF;
-  END FUNCTION;
+ARCHITECTURE rtl OF fifo_sc_single IS
 
-  FUNCTION f_min(a,b : INTEGER) RETURN INTEGER IS 
-  BEGIN 
-    IF a < b THEN 
-      RETURN a;
-    ELSE 
-      RETURN b;
-    END IF;
-  END FUNCTION;
-
-  CONSTANT c_rd_depth   : INTEGER := g_wr_depth * g_wr_width / g_rd_width;
-  CONSTANT c_factor     : INTEGER := f_max(g_wr_width, g_rd_width) / f_min(g_wr_width, g_rd_width);
-  CONSTANT c_factor_log : INTEGER := INTEGER(CEIL(LOG2(REAL(c_factor))));
   -- pointer handling write domain
-  SIGNAL r_wr_ptr_wr    : UNSIGNED( INTEGER(CEIL(LOG2(REAL(g_wr_depth)))) DOWNTO 0 );
-  SIGNAL r_rd_ptr_wr    : UNSIGNED( INTEGER(CEIL(LOG2(REAL(g_wr_depth)))) DOWNTO 0 );
+  SIGNAL r_wr_ptr_wr    : UNSIGNED( INTEGER(CEIL(LOG2(REAL(g_depth)))) DOWNTO 0 );
+  SIGNAL r_rd_ptr_wr    : UNSIGNED( INTEGER(CEIL(LOG2(REAL(g_depth)))) DOWNTO 0 );
   -- pointer handling read domain
-  SIGNAL r_wr_ptr_rd    : UNSIGNED( INTEGER(CEIL(LOG2(REAL(c_rd_depth)))) DOWNTO 0 );
-  SIGNAL r_rd_ptr_rd    : UNSIGNED( INTEGER(CEIL(LOG2(REAL(c_rd_depth)))) DOWNTO 0 );
+  SIGNAL r_wr_ptr_rd    : UNSIGNED( INTEGER(CEIL(LOG2(REAL(g_depth)))) DOWNTO 0 );
+  SIGNAL r_rd_ptr_rd    : UNSIGNED( INTEGER(CEIL(LOG2(REAL(g_depth)))) DOWNTO 0 );
   -- status signals
   SIGNAL s_full         : STD_LOGIC := '0';
   SIGNAL s_empty        : STD_LOGIC := '0';
@@ -100,18 +79,10 @@ BEGIN
     -- write pointer
     IF r_wr_ptr_wr'LENGTH = r_wr_ptr_rd'LENGTH THEN
       r_wr_ptr_rd <= r_wr_ptr_wr;
-    ELSIF r_wr_ptr_rd'LENGTH < r_wr_ptr_wr'LENGTH THEN
-      r_wr_ptr_rd <= r_wr_ptr_wr(r_wr_ptr_wr'HIGH DOWNTO c_factor_log);
-    ELSIF r_wr_ptr_rd'LENGTH > r_wr_ptr_wr'LENGTH THEN
-      r_wr_ptr_rd <= r_wr_ptr_wr & TO_UNSIGNED(0, C_factor_log);
     END IF;
     --read ptr
     IF r_rd_ptr_wr'LENGTH = r_rd_ptr_rd'LENGTH THEN
       r_rd_ptr_wr <= r_rd_ptr_rd;
-    ELSIF r_rd_ptr_wr'LENGTH < r_rd_ptr_rd'LENGTH THEN
-      r_rd_ptr_wr <= r_rd_ptr_rd(r_rd_ptr_rd'HIGH DOWNTO c_factor_log);
-    ELSIF r_rd_ptr_wr'LENGTH > r_rd_ptr_rd'LENGTH THEN
-      r_rd_ptr_wr <= r_rd_ptr_rd & TO_UNSIGNED(0, c_factor_log);
     END IF;
   END PROCESS;
 
@@ -123,11 +94,11 @@ BEGIN
   --====================================================================
   inst_mem: ENTITY WORK.ram_sdp
     GENERIC MAP (
-      g_depth_a       => g_wr_depth,
-      g_depth_b       => c_rd_depth,
+      g_depth_a       => g_depth,
+      g_depth_b       => g_depth,
       g_output_reg    => g_output_reg,
-      g_data_width_a  => g_wr_width,
-      g_data_width_b  => g_rd_width
+      g_data_width_a  => g_width,
+      g_data_width_b  => g_width
     )
     PORT MAP (
       clock           => i_clock,
@@ -150,7 +121,7 @@ BEGIN
           ELSE '0';
 
   s_almost_empty <= '1' WHEN r_usedw_rd < 4 ELSE '0';
-  s_almost_full  <= '1' WHEN r_usedw_wr > g_wr_depth-4;
+  s_almost_full  <= '1' WHEN r_usedw_wr > g_depth-4;
 
 
   --====================================================================

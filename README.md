@@ -1,7 +1,7 @@
 # README #
 
 ![Vunit Tests](https://github.com/cm8f/hdl-base/actions/workflows/ci.yml/badge.svg)
-[![codecov](https://codecov.io/gh/cm8f/hdl-base/branch/master/graph/badge.svg?token=UYQFIO5X9O)](https://codecov.io/gh/cm8f/hdl-base)
+![Coverage Target](https://github.com/cm8f/hdl-base/actions/workflows/cov.yml/badge.svg)
 ![License](https://img.shields.io/github/license/cm8f/hdl-base)
 
 ### What is this repository for? ###

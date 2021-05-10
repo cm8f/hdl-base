@@ -1,9 +1,0 @@
-image: ghdl/vunit:gcc
-
-pipelines:
-  default:
-    - step:
-        name: 'simulate'
-        script:
-          - mkdir ./test-results
-          - python3 ./run.py -p 6 -x ./test-results/output.xml --xunit-xml-format jenkins --exit-0 --no-color --cover 1 --clean 

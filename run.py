@@ -57,9 +57,8 @@ create_test_suites(VU, args)
 
 if args.vhdl_ls:
     vhdl_ls(VU)
-    exit()
 
 if args.cover:
-    VU.main()
-else:
     VU.main(post_run=post_run)
+else:
+    VU.main()

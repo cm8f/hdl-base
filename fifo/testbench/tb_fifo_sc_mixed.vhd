@@ -181,25 +181,46 @@ BEGIN
   --====================================================================
   --= device under test
   --====================================================================
-  inst_dut: ENTITY WORK.fifo_sc_mixed
-    GENERIC MAP (
-      g_wr_width    => g_wr_width,
-      g_rd_width    => g_rd_width,
-      g_wr_depth    => g_wr_depth,
-      g_output_reg  => g_output_reg
-    )
-    PORT MAP(
-      i_clock         => i_clock,
-      i_reset         => i_reset,
-      i_din           => i_din,
-      i_wrreq         => i_wrreq,
-      i_rdreq         => i_rdreq,
-      o_dout          => o_dout,
-      o_empty         => o_empty,
-      o_full          => o_full,
-      o_almost_empty  => o_almost_full,
-      o_almost_full   => o_almost_empty
-    );
+  GEN_SINGLE_WIDTH : IF g_wr_width = g_rd_width GENERATE 
+    inst_dut: ENTITY WORK.fifo_sc_single
+      GENERIC MAP (
+        g_width         => g_wr_width,
+        g_depth         => g_wr_depth,
+        g_output_reg    => g_output_reg
+      )
+      PORT MAP(
+        i_clock         => i_clock,
+        i_reset         => i_reset,
+        i_din           => i_din,
+        i_wrreq         => i_wrreq,
+        i_rdreq         => i_rdreq,
+        o_dout          => o_dout,
+        o_empty         => o_empty,
+        o_full          => o_full,
+        o_almost_empty  => o_almost_full,
+        o_almost_full   => o_almost_empty
+      );
+  ELSE GENERATE
+    inst_dut: ENTITY WORK.fifo_sc_mixed
+      GENERIC MAP (
+        g_wr_width    => g_wr_width,
+        g_rd_width    => g_rd_width,
+        g_wr_depth    => g_wr_depth,
+        g_output_reg  => g_output_reg
+      )
+      PORT MAP(
+        i_clock         => i_clock,
+        i_reset         => i_reset,
+        i_din           => i_din,
+        i_wrreq         => i_wrreq,
+        i_rdreq         => i_rdreq,
+        o_dout          => o_dout,
+        o_empty         => o_empty,
+        o_full          => o_full,
+        o_almost_empty  => o_almost_full,
+        o_almost_full   => o_almost_empty
+      );
+  END GENERATE;
 
 
   --====================================================================

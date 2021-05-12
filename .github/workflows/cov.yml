@@ -3,12 +3,12 @@ name: COV
 on: [push]
 
 jobs:
-  vunit-ghdl-sim:
+  vunit-ghdl-cov:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       
       - uses: docker://ghdl/vunit:gcc
         with:
-          args: python3 ./run.py -p 12 --cover
+          args: python3 ./run.py -p 12 --cover && cat ./cover.txt
 

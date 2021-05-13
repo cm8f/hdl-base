@@ -1,0 +1,3 @@
+[submodule "external/fphdl"]
+	path = external/fphdl
+	url = git@github.com:FPHDL/fphdl.git

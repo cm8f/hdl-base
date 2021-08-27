@@ -18,6 +18,9 @@ pipeline {
     }
     post {
         always {
+            
+            archiveArtifacts artifacts: 'vunit_out/*', fingerprint: true
+            archiveArtifacts artifacts: '**/*.xml', fingerprint: true
             archiveArtifacts artifacts: '**/*.xml', fingerprint: true
             archiveArtifacts artifacts: '**/*.txt', fingerprint: true
             junit '**/output.xml'

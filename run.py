@@ -32,7 +32,7 @@ def vhdl_ls(VU):
 def post_run(results):
     results.merge_coverage(file_name="coverage_data")
     if VU.get_simulator_name() == "ghdl":
-        call(["gcovr", "--exclude-unreachable-branches", "--exclude-unreachable-branches", "-x", "coverage.xml", "coverage_data"])
+        call(["gcovr", "--exclude-unreachable-branches", "--exclude-unreachable-branches", "-x", "coverage.txt", "coverage_data"])
         #call(["gcovr", "--exclude-unreachable-branches", "--exclude-unreachable-branches", "-o", "coverage.txt", "--fail-under-line", "100", "coverage_data"])
 
 
